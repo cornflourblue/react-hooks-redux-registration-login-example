@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { userActions } from '../_actions';
@@ -13,6 +13,7 @@ function LoginPage() {
     const { username, password } = inputs;
     const loggingIn = useSelector(state => state.authentication.loggingIn);
     const dispatch = useDispatch();
+    const location = useLocation();
 
     // reset login status
     useEffect(() => { 
@@ -29,7 +30,9 @@ function LoginPage() {
 
         setSubmitted(true);
         if (username && password) {
-            dispatch(userActions.login(username, password));
+            // get return url from location state or default to home page
+            const { from } = location.state || { from: { pathname: "/" } };
+            dispatch(userActions.login(username, password, from));
         }
     }
 
